@@ -18,33 +18,43 @@ func main() {
 	defer file.Close()
 
 	total_calibration_sum := 0
+
+	// Channels to store results of each line
+	firstChan := make(chan string)
+	secondChan := make(chan string)
+
+	// Loop through each line in the file
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		firstDigit := loopForwards(scanner.Text())
-		secondDigit := loopBackwards(scanner.Text())
+		go loopForwards(scanner.Text(), firstChan)
+		go loopBackwards(scanner.Text(), secondChan)
+		firstDigit := <-firstChan
+		secondDigit := <-secondChan
 		total_calibration_sum += combineDigits(firstDigit, secondDigit)
 	}
 	fmt.Printf("Total result is %d", total_calibration_sum)
 }
 
-func loopForwards(line string) string {
+func loopForwards(line string, ch chan string) {
 	for _, character := range line {
 		if unicode.IsDigit(character) {
-			return string(character)
+			ch <- string(character)
+			return
 		}
 	}
-	return ""
+	return
 }
 
-func loopBackwards(line string) string {
+func loopBackwards(line string, ch chan string) {
 	for i := len(line) - 1; i >= 0; i-- {
 		character := line[i]
 		r, _ := utf8.DecodeRuneInString(string(character))
 		if unicode.IsDigit(r) {
-			return string(character)
+			ch <- string(character)
+			return
 		}
 	}
-	return ""
+	return
 }
 
 func combineDigits(firstDigit string, secondDigit string) int {

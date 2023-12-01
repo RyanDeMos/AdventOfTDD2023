@@ -54,7 +54,9 @@ func Test_loopForwards(t *testing.T) {
 
 	for _, testcase := range tests {
 		t.Run(testcase.name, func(t *testing.T) {
-			got := loopForwards(testcase.input)
+			ch := make(chan string)
+			go loopForwards(testcase.input, ch)
+			got := <-ch
 			want := testcase.expected
 			if got != want {
 				t.Fatalf("Wanted %s, but got %s", want, got)
@@ -113,7 +115,9 @@ func Test_loopBackwards(t *testing.T) {
 
 	for _, testcase := range tests {
 		t.Run(testcase.name, func(t *testing.T) {
-			got := loopBackwards(testcase.input)
+			ch := make(chan string)
+			go loopBackwards(testcase.input, ch)
+			got := <-ch
 			want := testcase.expected
 			if got != want {
 				t.Fatalf("Wanted %s, but got %s", want, got)
