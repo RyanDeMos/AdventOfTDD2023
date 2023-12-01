@@ -123,6 +123,12 @@ func Test_combineDigits(t *testing.T) {
 			inputDigit2: "7",
 			expected:    77,
 		},
+		{
+			name:        "First digit is 0",
+			inputDigit1: "0",
+			inputDigit2: "7",
+			expected:    7,
+		},
 	}
 
 	for _, testcase := range tests {
