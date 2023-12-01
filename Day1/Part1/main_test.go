@@ -11,9 +11,14 @@ func Test_loopForwards(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "Digits in first position",
+			name:     "Digit in first position",
 			input:    "1abc2",
 			expected: "1",
+		},
+		{
+			name:     "Digit in last position",
+			input:    "aabc2",
+			expected: "2",
 		},
 		{
 			name:     "Digits not at ends",
@@ -50,9 +55,14 @@ func Test_loopBackwards(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "Digits in last positions",
-			input:    "1abc2",
+			name:     "Digit in last positions",
+			input:    "abc2",
 			expected: "2",
+		},
+		{
+			name:     "Digit in first positions",
+			input:    "1abc",
+			expected: "1",
 		},
 		{
 			name:     "Digits not at ends",
