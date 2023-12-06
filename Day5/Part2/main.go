@@ -4,15 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
-type SeedsAndType struct {
-	seedNumber int
-	typeOfSeed string
+type mapping struct {
+	destination int
+	source      int
+	length      int
 }
 
 func main() {
@@ -32,58 +34,26 @@ func main() {
 	file.Close()
 
 	// Used to track the minimum of the locations from each range
-	minimums := []int{}
+	minimumLocation := math.MaxInt
+
+	// Get Mappings
+	allMappings := parseMappings(fileLines)
 
 	// Get the seed ranges
-	seeds := []SeedsAndType{}
 	SeedRanges := parseSeeds(fileLines[0])
-	for seedRange := 1; seedRange < len(SeedRanges); seedRange += 2 {
-		startLocation := SeedRanges[seedRange-1]
-		rangeLength := SeedRanges[seedRange]
-		seeds = parseRange(startLocation, rangeLength)
-		currentType := "seed"
-		for _, line := range fileLines[1:] {
-			destination, source, rangeLength, newType := parseLine(line, currentType)
-			delta := findDelta(destination, source)
-			seeds = convertToNext(seeds, destination, delta, rangeLength, newType)
-			currentType = newType
-			// fmt.Printf("Second seed: %v, Line Number %d\n", seeds[1], lineNumber)
-		}
-		minimums = append(minimums, findMinimum(seeds))
-		fmt.Printf("%v\n", minimums)
-	}
-
-	actualMinimum := seeds[0].seedNumber
-	for _, seed := range seeds {
-		if seed.seedNumber < actualMinimum {
-			actualMinimum = seed.seedNumber
+	for i := 0; i < len(SeedRanges); i += 2 {
+		seedStart, seedRangeLength := SeedRanges[i], SeedRanges[i+1]
+		for seed := seedStart; seed <= seedStart+seedRangeLength; seed++ {
+			tmpSeed := seed
+			for _, nextMapping := range allMappings {
+				tmpSeed = convertToNext(nextMapping, tmpSeed)
+			}
+			if tmpSeed < minimumLocation {
+				minimumLocation = tmpSeed
+			}
 		}
 	}
-	fmt.Printf("Actual Minimum: %d", actualMinimum)
-	// lineNumber := 1
-	// seeds := []SeedsAndType{}
-	// currentType := "seed"
-	// scanner := bufio.NewScanner(file)
-	// for scanner.Scan() {
-	// 	if lineNumber == 1 {
-	// 		seedsList := parseSeeds(scanner.Text())
-	// 		for _, seedNumber := range seedsList {
-	// 			seeds = append(seeds, SeedsAndType{seedNumber, "seed"})
-	// 		}
-	// 		fmt.Printf("Second seed: %v\n", seeds[1])
-	// 	} else {
-	// 		destination, source, rangeLength, newType := parseLine(scanner.Text(), currentType)
-	// 		delta := findDelta(destination, source)
-	// 		seeds = convertToNext(seeds, destination, delta, rangeLength, newType)
-	// 		// fmt.Printf("Second seed: %v, Line Number %d\n", seeds[1], lineNumber)
-	// 		currentType = newType
-	// 	}
-	// 	lineNumber += 1
-	// }
-
-	// fmt.Print(seeds)
-	// minimumLoc := findMinimum(seeds)
-	// fmt.Printf("\nMinimum location: %v\n", minimumLoc)
+	fmt.Printf("Actual Minimum: %d", minimumLocation)
 }
 
 func parseSeeds(line string) []int {
@@ -96,93 +66,48 @@ func parseSeeds(line string) []int {
 		}
 		IntSeeds = append(IntSeeds, intseed)
 	}
-
-	// actualSeedInt := []int{}
-	// for idx, number := range IntSeeds {
-	// 	if idx%2 == 0 {
-	// 		fmt.Printf("idx: %d", idx)
-	// 		continue
-	// 	} else {
-	// 		for j := 0; j < number; j++ {
-	// 			actualSeedInt = append(actualSeedInt, IntSeeds[idx-1]+j)
-	// 		}
-	// 	}
-	// }
-
 	return IntSeeds
 }
 
-func parseLine(line string, currentType string) (int, int, int, string) {
-	if line == "" {
-		return 0, 0, 0, currentType
+func parseRange(line string) mapping {
+	pieces := strings.Split(line, " ")
+	if len(pieces) != 3 {
+		log.Fatal("Should be length 3")
 	}
-
-	if !unicode.IsDigit(rune(line[0])) {
-		newType := strings.Split(line, "-to-")
-		newType = strings.Split(newType[1], " ")
-		fmt.Printf("New type: %v\n", newType[0])
-		return 0, 0, 0, newType[0]
-	}
-
-	result := strings.Split(line, " ")
-
-	destination, err := strconv.Atoi(result[0])
+	destination, err := strconv.Atoi(pieces[0])
+	source, err := strconv.Atoi(pieces[1])
+	length, err := strconv.Atoi(pieces[2])
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	source, err := strconv.Atoi(result[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rangeLength, err := strconv.Atoi(result[2])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return destination, source, rangeLength, currentType
+	return mapping{destination, source, length}
 }
 
-func parseRange(minimum int, length int) []SeedsAndType {
-	seedsList := []SeedsAndType{}
-	for seed := minimum; seed < minimum+length; seed++ {
-		seedsList = append(seedsList, SeedsAndType{seed, "seed"})
+func parseMappings(lines []string) [][]mapping {
+	var allMappings [][]mapping
+	for i := 3; i < len(lines); i += 2 {
+		var toNextLines []string
+		for i < len(lines) && lines[i] != "" {
+			toNextLines = append(toNextLines, lines[i])
+			i += 1
+		}
+		var toNext []mapping
+		for _, line := range toNextLines {
+			toNext = append(toNext, parseRange(line))
+		}
+		sort.Slice(toNext, func(j int, k int) bool {
+			return toNext[j].source < toNext[k].source
+		})
+		allMappings = append(allMappings, toNext)
 	}
-	return seedsList
+	return allMappings
 }
 
-func findDelta(destination int, source int) int {
-	return destination - source
-}
-
-func convertToNext(seeds []SeedsAndType, destination int, delta int, rangeLength int, newType string) []SeedsAndType {
-	modifiedSeeds := []SeedsAndType{}
-	for _, seed := range seeds {
-		if seed.seedNumber+delta >= destination && seed.seedNumber+delta <= destination+rangeLength-1 {
-			if seed.typeOfSeed != newType {
-				modifiedSeeds = append(modifiedSeeds, SeedsAndType{seed.seedNumber + delta, newType})
-			} else {
-				modifiedSeeds = append(modifiedSeeds, seed)
-			}
-		} else {
-			modifiedSeeds = append(modifiedSeeds, seed)
+func convertToNext(rangeMap []mapping, seeds int) int {
+	for _, Range := range rangeMap {
+		if Range.source <= seeds && seeds <= Range.source+Range.length-1 {
+			return Range.destination - Range.source + seeds
 		}
 	}
-	return modifiedSeeds
-}
-
-func findMinimum(seeds []SeedsAndType) int {
-	if len(seeds) == 0 {
-		log.Fatalf("YOU PASSED AN EMPTY ARRAY DONT DO THAT")
-	}
-	minimum := seeds[0].seedNumber
-
-	for _, seed := range seeds {
-		if seed.seedNumber < minimum {
-			minimum = seed.seedNumber
-		}
-	}
-
-	return minimum
+	return seeds
 }
