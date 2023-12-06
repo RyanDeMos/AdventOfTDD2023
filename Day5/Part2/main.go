@@ -6,7 +6,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -95,9 +94,9 @@ func parseMappings(lines []string) [][]mapping {
 		for _, line := range toNextLines {
 			toNext = append(toNext, parseRange(line))
 		}
-		sort.Slice(toNext, func(j int, k int) bool {
-			return toNext[j].source < toNext[k].source
-		})
+		// sort.Slice(toNext, func(j int, k int) bool {
+		// 	return toNext[j].source < toNext[k].source
+		// })
 		allMappings = append(allMappings, toNext)
 	}
 	return allMappings
