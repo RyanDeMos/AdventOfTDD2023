@@ -8,9 +8,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	start := time.Now()
+
 	// file, err := os.Open("./Day6/Part1/input/testInput.txt")
 	file, err := os.Open("./Day6/Part1/input/InputFile.txt")
 	if err != nil {
@@ -31,6 +34,9 @@ func main() {
 	amountOfSolutions := getPossibleDistances(raceDistances, raceDurations)
 
 	fmt.Printf("Amount of solutions is %v\n", amountOfSolutions)
+
+	elapsed := time.Since(start)
+	fmt.Printf("Total runtime: %s\n", elapsed)
 }
 
 func parseLine(line string) int {

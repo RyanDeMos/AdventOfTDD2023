@@ -8,9 +8,11 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	start := time.Now()
 	// file, err := os.Open("./Day6/Part1/input/testInput.txt")
 	file, err := os.Open("./Day6/Part1/input/InputFile.txt")
 	if err != nil {
@@ -28,8 +30,6 @@ func main() {
 
 	raceDurations := parseLine(fileLines[0])
 	raceDistances := parseLine(fileLines[1])
-	fmt.Printf("raceDurations: %v\n", raceDurations)
-	fmt.Printf("raceDistances: %v\n", raceDistances)
 
 	possibleDistances := getPossibleDistances(raceDistances, raceDurations)
 	totalProduct := 1
@@ -37,6 +37,8 @@ func main() {
 		totalProduct *= distance
 	}
 	fmt.Printf("Total product is %v\n", totalProduct)
+	elapsed := time.Since(start)
+	fmt.Printf("Total runtime: %s\n", elapsed)
 }
 
 func parseLine(line string) []int {
@@ -66,8 +68,6 @@ func getPossibleDistances(raceDistances []int, raceDurations []int) []int {
 			amountOfSolutions += 1
 		}
 		possibleDistances = append(possibleDistances, amountOfSolutions)
-		fmt.Printf("%v\n", possibleDistances)
 	}
-	fmt.Printf("Possible distances: %v", possibleDistances)
 	return possibleDistances
 }
