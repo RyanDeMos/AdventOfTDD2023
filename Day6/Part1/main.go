@@ -63,11 +63,13 @@ func getPossibleDistances(raceDistances []int, raceDurations []int) []int {
 		distance := raceDistances[i]
 		lowerRoot := ((float64(time)) - math.Sqrt(math.Pow(float64(time), 2)-4*float64(distance))) / (2)
 		upperRoot := ((float64(time)) + math.Sqrt(math.Pow(float64(time), 2)-4*float64(distance))) / (2)
-		amountOfSolutions := 0
-		for j := int(lowerRoot) + 1; float64(j) < upperRoot; j++ {
-			amountOfSolutions += 1
+		// If upperRoot is an int (unlikely) then the amount of integers between the two roots is different
+		if upperRoot != float64(int(upperRoot)) {
+			possibleDistances = append(possibleDistances, int(upperRoot)-int(lowerRoot))
+		} else {
+			possibleDistances = append(possibleDistances, int(upperRoot)-int(lowerRoot)-1)
 		}
-		possibleDistances = append(possibleDistances, amountOfSolutions)
+
 	}
 	return possibleDistances
 }
