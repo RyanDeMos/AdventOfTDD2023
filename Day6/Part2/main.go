@@ -13,8 +13,23 @@ import (
 
 func main() {
 	start := time.Now()
-	// file, err := os.Open("./Day6/Part1/input/testInput.txt")
-	file, err := os.Open("./Day6/Part1/input/InputFile.txt")
+
+	fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/InputFile.txt")
+	// fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/testInput.txt")
+
+	raceDurations := parseLine(fileLines[0])
+	raceDistances := parseLine(fileLines[1])
+
+	amountOfSolutions := getPossibleDistances(raceDistances, raceDurations)
+
+	fmt.Printf("Amount of solutions is %v\n", amountOfSolutions)
+
+	elapsed := time.Since(start)
+	fmt.Printf("Total runtime: %s\n", elapsed)
+}
+
+func ReadFileIntoStringSlice(filePath string) []string {
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,15 +43,7 @@ func main() {
 	}
 	file.Close()
 
-	raceDurations := parseLine(fileLines[0])
-	raceDistances := parseLine(fileLines[1])
-
-	amountOfSolutions := getPossibleDistances(raceDistances, raceDurations)
-
-	fmt.Printf("Amount of solutions is %v\n", amountOfSolutions)
-
-	elapsed := time.Since(start)
-	fmt.Printf("Total runtime: %s\n", elapsed)
+	return fileLines
 }
 
 func parseLine(line string) int {
