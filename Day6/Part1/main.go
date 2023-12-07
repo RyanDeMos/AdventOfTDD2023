@@ -11,10 +11,8 @@ import (
 	"time"
 )
 
-func main() {
-	start := time.Now()
-	// file, err := os.Open("./Day6/Part1/input/testInput.txt")
-	file, err := os.Open("./Day6/Part1/input/InputFile.txt")
+func ReadFileIntoStringSlice(filePath string) []string {
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,6 +25,15 @@ func main() {
 		fileLines = append(fileLines, fileScanner.Text())
 	}
 	file.Close()
+
+	return fileLines
+}
+
+func main() {
+	start := time.Now()
+
+	// fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/testInput.txt")
+	fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/InputFile.txt")
 
 	raceDurations := parseLine(fileLines[0])
 	raceDistances := parseLine(fileLines[1])
