@@ -21,7 +21,7 @@ func Test_parseLineIntoHand(t *testing.T) {
 			line: "32T3K 765",
 			expected: hand{
 				bid:       765,
-				hand:      "32T3K",
+				cards:     "32T3K",
 				handValue: 1,
 			},
 		},
@@ -30,7 +30,7 @@ func Test_parseLineIntoHand(t *testing.T) {
 			line: "T55J5 684",
 			expected: hand{
 				bid:       684,
-				hand:      "T55J5",
+				cards:     "T55J5",
 				handValue: 3,
 			},
 		},
@@ -39,7 +39,7 @@ func Test_parseLineIntoHand(t *testing.T) {
 			line: "KK677 28",
 			expected: hand{
 				bid:       28,
-				hand:      "KK677",
+				cards:     "KK677",
 				handValue: 2,
 			},
 		},
@@ -48,7 +48,7 @@ func Test_parseLineIntoHand(t *testing.T) {
 			line: "KTJJT 220",
 			expected: hand{
 				bid:       220,
-				hand:      "KTJJT",
+				cards:     "KTJJT",
 				handValue: 2,
 			},
 		},
@@ -57,7 +57,7 @@ func Test_parseLineIntoHand(t *testing.T) {
 			line: "QQQJA 483",
 			expected: hand{
 				bid:       483,
-				hand:      "QQQJA",
+				cards:     "QQQJA",
 				handValue: 3,
 			},
 		},
