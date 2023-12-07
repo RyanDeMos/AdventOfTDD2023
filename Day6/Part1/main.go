@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func ReadFileIntoStringSlice(filePath string) []string {
@@ -30,7 +29,7 @@ func ReadFileIntoStringSlice(filePath string) []string {
 }
 
 func main() {
-	start := time.Now()
+	// start := time.Now()
 
 	// fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/testInput.txt")
 	fileLines := ReadFileIntoStringSlice("./Day6/Part1/input/InputFile.txt")
@@ -44,8 +43,8 @@ func main() {
 		totalProduct *= distance
 	}
 	fmt.Printf("Total product is %v\n", totalProduct)
-	elapsed := time.Since(start)
-	fmt.Printf("Total runtime: %s\n", elapsed)
+	// elapsed := time.Since(start)
+	// fmt.Printf("Total runtime: %s\n", elapsed)
 }
 
 func parseLine(line string) []int {
@@ -66,10 +65,10 @@ func parseLine(line string) []int {
 func getPossibleDistances(raceDistances []int, raceDurations []int) []int {
 	possibleDistances := []int{}
 	for i := 0; i < len(raceDistances); i++ {
-		time := raceDurations[i]
-		distance := raceDistances[i]
-		lowerRoot := ((float64(time)) - math.Sqrt(math.Pow(float64(time), 2)-4*float64(distance))) / (2)
-		upperRoot := ((float64(time)) + math.Sqrt(math.Pow(float64(time), 2)-4*float64(distance))) / (2)
+		time := float64(raceDurations[i])
+		distance := float64(raceDistances[i])
+		lowerRoot := (time - math.Sqrt(math.Pow(time, 2)-4*distance)) / (2)
+		upperRoot := (time + math.Sqrt(math.Pow(time, 2)-4*distance)) / (2)
 		// If upperRoot is an int (unlikely) then the amount of integers between the two roots is different
 		if upperRoot != float64(int(upperRoot)) {
 			possibleDistances = append(possibleDistances, int(upperRoot)-int(lowerRoot))
