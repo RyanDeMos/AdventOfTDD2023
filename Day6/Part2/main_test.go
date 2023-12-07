@@ -6,7 +6,7 @@ func Test_parseLine(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
-		expected int
+		expected float64
 	}{
 		{
 			name:     "Working test",
@@ -39,8 +39,8 @@ func Test_getPossibleDistances(t *testing.T) {
 	tests := []struct {
 		name     string
 		expected int
-		distance int
-		time     int
+		distance float64
+		time     float64
 	}{
 		{
 			name:     "test",

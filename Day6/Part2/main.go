@@ -46,18 +46,18 @@ func ReadFileIntoStringSlice(filePath string) []string {
 	return fileLines
 }
 
-func parseLine(line string) int {
+func parseLine(line string) float64 {
 	combinedDigits := strings.ReplaceAll(line[9:], " ", "")
 	singleInt, err := strconv.Atoi(combinedDigits)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return singleInt
+	return float64(singleInt)
 }
 
-func getPossibleDistances(distance int, raceDuration int) int {
-	lowerRoot := ((float64(raceDuration)) - math.Sqrt(math.Pow(float64(raceDuration), 2)-4*float64(distance))) / (2)
-	upperRoot := ((float64(raceDuration)) + math.Sqrt(math.Pow(float64(raceDuration), 2)-4*float64(distance))) / (2)
+func getPossibleDistances(distance float64, raceDuration float64) int {
+	lowerRoot := (raceDuration - math.Sqrt(math.Pow(raceDuration, 2)-4*distance)) / (2)
+	upperRoot := (raceDuration + math.Sqrt(math.Pow(raceDuration, 2)-4*distance)) / (2)
 	// If upperRoot is an int (unlikely) then the amount of integers between the two roots is different
 	if upperRoot != float64(int(upperRoot)) {
 		return int(upperRoot) - int(lowerRoot)

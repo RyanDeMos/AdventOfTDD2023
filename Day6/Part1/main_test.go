@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func Benchmark_main(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		main()
+	}
+}
+
 func Test_parseLine(t *testing.T) {
 	tests := []struct {
 		name      string
