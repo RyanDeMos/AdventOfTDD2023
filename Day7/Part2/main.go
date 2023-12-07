@@ -92,11 +92,14 @@ func findHandValue(cards string) int {
 	cardCounts := []int{}
 	for key, val := range handCardMap {
 		if key != "J" {
-			cardCounts = append(cardCounts, val+handCardMap["J"])
+			cardCounts = append(cardCounts, val)
 		}
 	}
-
 	slices.Sort(cardCounts)
+
+	// Always add more cards to the card type with the most
+	cardCounts[len(cardCounts)-1] += handCardMap["J"]
+
 	if len(cardCounts) == 0 {
 		panic("WHAT THE FUCK")
 	}
