@@ -37,15 +37,11 @@ func main() {
 	filesLines := ReadFileIntoStringSlice("./Day7/Part2/input/InputFile.txt")
 	// filesLines := ReadFileIntoStringSlice("./Day7/Part2/input/testInput.txt")
 	allHands := []hand{}
-	for idx, line := range filesLines {
-		fmt.Printf("Parse line %v into a hand. Line: %s\n", idx, line)
+	for _, line := range filesLines {
 		allHands = append(allHands, parseLineIntoHand(line))
 	}
 	allHands = sortHands(allHands)
-	fmt.Printf("All hands: %v\n", allHands)
-	for _, hands := range allHands {
-		fmt.Printf("Hand %v, value %d\n", hands, hands.handValue)
-	}
+
 	totalWinnings := getTotalWinnings(allHands)
 	fmt.Printf("Total winnings: %d\n", totalWinnings)
 }
@@ -100,9 +96,6 @@ func findHandValue(cards string) int {
 	// Always add more cards to the card type with the most
 	cardCounts[len(cardCounts)-1] += handCardMap["J"]
 
-	if len(cardCounts) == 0 {
-		panic("WHAT THE FUCK")
-	}
 	if cardCounts[len(cardCounts)-1] == 5 { //five of a kind
 		return 6
 	} else if cardCounts[len(cardCounts)-1] == 4 { // four of a kind
