@@ -6,6 +6,7 @@ Team the Gibs
 Ryan de Mos and Huang Shewei
 
 # How to run various day solutions
+Note: Since the input files are not part of the repo you will have to use your own.
 To run the solution for a particular day and part use
 
 ```bash
