@@ -16,10 +16,14 @@ func Part1() {
 	patterns := getPatterns(fileLines)
 	totalPoints := 0
 	for _, pattern := range patterns {
+		// Get transpose for easier time handling columns
 		transposedPattern := transpose(pattern)
+
+		// find all adjacent matching rows
 		matchingRows := findMatchingRows(pattern)
 		matchingColumns := findMatchingRows(transposedPattern)
 
+		// for each pair of the above, check if that line makes a reflection and add the points
 		for idx, matchingRow := range matchingRows {
 			isRowReflection := checkForReflection(pattern, matchingRow)
 			if isRowReflection {
@@ -95,7 +99,7 @@ func findMatchingRows(pattern []string) []int {
 }
 
 func checkForReflection(pattern []string, matchingRowIndexs int) bool {
-	i := 0
+	i := 1
 	for i+matchingRowIndexs < len(pattern) {
 		if matchingRowIndexs-1-i < 0 {
 			return true
