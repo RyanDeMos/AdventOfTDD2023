@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	fileLines := ReadFileIntoStringSlice("./Day14/Part2/input/testInput.txt")
-	// fileLines := ReadFileIntoStringSlice("./Day14/Part2/input/InputFile.txt")
+	// fileLines := ReadFileIntoStringSlice("./Day14/Part2/input/testInput.txt")
+	fileLines := ReadFileIntoStringSlice("./Day14/Part2/input/InputFile.txt")
 	Part2(fileLines)
 }
 
@@ -38,11 +38,12 @@ func Part2(fileLines []string) {
 		grid = append(grid, strings.Split(line, ""))
 	}
 
-	possibleSolutions := map[int]bool{}
-	seenGrids := map[string]bool{}
+	seenGrids := map[string]int{}
+	possibleSolutions := []int{}
 
 	cycle := 0
-	for cycle < (300) {
+	repitionLength := 0
+	for cycle < (1000000000) {
 
 		moveAllStonesNorth(grid)
 		moveAllStonesWest(grid)
@@ -55,35 +56,25 @@ func Part2(fileLines []string) {
 			}
 		}
 
-		// seenGrids[allLines] = true
-		// possibleSolutions[getLoad(grid)] = true
 		cycle += 1
 		fmt.Printf("Cycle: %v\n", cycle)
-		if cycle > 94 {
-			if seenGrids[allLines] {
-				break
-			}
-			seenGrids[allLines] = true
-			possibleSolutions[getLoad(grid)] = true
-		}
-	}
-	totalLoad1 := getLoad(grid)
-	fmt.Printf("Len Possible Solutions %v\n", len(possibleSolutions))
-	fmt.Printf("Len seen Grids Solutions %v\n", len(seenGrids))
-	fmt.Printf("Total Load1: %d\n", totalLoad1)
+		possibleSolutions = append(possibleSolutions, getLoad(grid))
 
-	// grid2 := [][]string{}
-	// for _, line := range fileLines {
-	// 	grid2 = append(grid2, strings.Split(line, ""))
-	// }
-	// for j := 0; j < (1000000000%len(possibleSolutions)); j++ {
-	// 	moveAllStonesNorth(grid2)
-	// 	moveAllStonesWest(grid2)
-	// 	moveAllStonesSouth(grid2)
-	// 	moveAllStonesEast(grid2)
-	// }
-	// totalLoad := getLoad(grid2)
-	// fmt.Printf("Total Load: %d\n", totalLoad)
+		if seenGrids[allLines] != 0 {
+			fmt.Printf("Cycle %v matches grid %v\n", cycle, seenGrids[allLines])
+			repitionLength = cycle - seenGrids[allLines]
+			fmt.Printf("Cycle Length: %v\n", repitionLength)
+			break
+		}
+		seenGrids[allLines] = cycle
+
+	}
+
+	// fmt.Printf("1billion mod 7 == %v\n", (1000000000-(cycle-repitionLength))%repitionLength)
+	fmt.Printf("Possible Solutions: %v\n", possibleSolutions)
+	load := possibleSolutions[(cycle-repitionLength-1)+(1000000000-(cycle-repitionLength))%repitionLength]
+	fmt.Printf("Load: %v\n", load)
+
 }
 
 func getLoad(grid [][]string) int {
